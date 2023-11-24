@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <title>Attendance Tracker</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        label {
+            color: #26a69a;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        select {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            background-color: white;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"] {
+            width: 100%;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            text-transform: capitalize;
+        }
+        .customservice{
+            display: none;
+        }
+
+        .tabs {
+            overflow: hidden;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .tab {
+            display: block;
+            padding: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+            padding:2px;
+            width:30%;
+        }
+
+        .tab:hover {
+            background-color: #eee;
+        }
+        .tab:focus{
+            background-color: #4CAF50;
+        }
+
+        .tabcontent {
+            display: none;
+        }
+        h2, h4{
+            text-align: center;
+            font-weight: bold;
+            font-size:2rem;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        h2{
+            font-size:2.5rem;
+        }
+
+        .copy-btn, .off-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .copy-btn:hover, .off-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <h2>Attendance Tracker</h2>
+    <!-- Church Name Input -->
+    <label for="churchName">Church Name:</label>
+    <input type="text" id="churchName" name="churchName" required oninput="clearFieldError(this)">
+
+    <!-- Service Dropdown -->
+    <label for="serviceSelect">Service:</label>
+    <select id="serviceSelect" onchange="enableDateAndDay()">
+        <option value="none">Select Service</option>
+        <option value="Monday Bible Study">Monday Bible Study</option>
+        <option value="Thursday Revival Hour">Thursday Revival Hour</option>
+        <option value="Sunday Worship Service">Sunday Worship Service</option>
+        <option value="gck">GCK Service</option>
+        <option value="custom service">--Custom Service--</option>
+    </select>
+    <!--custo service option-->
+    <label for="customservice" class="customservice">Add Service:</label>
+    <input type="text" id="customservice" name="customservice" class="customservice">
+
+    <!-- Day and Date Inputs -->
+    <label for="day">Day:</label>
+    <input type="text" id="day" name="day" readonly required>
+
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date" readonly required>
+
+    <!-- Tabs for Attendance Sections -->
+    <div class="tabs">
+        <div class="tab" onclick="openSection('Adult', 0)">Adult</div>
+        <div class="tab" onclick="openSection('Youth', 1)">Youth</div>
+        <div class="tab" onclick="openSection('Children', 2)">Children</div>
+    </div>
+
+    <!-- Tab Content -->
+    <div id="Adult" class="tabcontent">
+        <h4>Adult Attendance</h4>
+        <label for="male1">Male:</label>
+        <input type="number" id="male1" name="male1" min="0" oninput="calculateTotal(1)">
+        <label for="female1">Female:</label>
+        <input type="number" id="female1" name="female1" min="0" oninput="calculateTotal(1)">
+        <label for="total1" style="color:#d62121;">Total:</label>
+        <input type="number" id="total1" name="total1" readonly>
+    </div>
+
+    <div id="Youth" class="tabcontent">
+        <h4>Youth Attendance</h4>
+        <label for="male2">Male:</label>
+        <input type="number" id="male2" name="male2" min="0" oninput="calculateTotal(2)">
+        <label for="female2">Female:</label>
+        <input type="number"  id="female2" name="female2" min="0" oninput="calculateTotal(2)">
+        <label for="total2" style="color:#d62121;">Total:</label>
+        <input type="number" id="total2" name="total2" readonly>
+    </div>
+
+    <div id="Children" class="tabcontent">
+        <h4>Children Attendance</h4>
+        <label for="male3">Male:</label>
+        <input type="number" id="male3" name="male3" min="0" oninput="calculateTotal(3)">
+        <label for="female3">Female:</label>
+        <input type="number" id="female3" name="female3" min="0" oninput="calculateTotal(3)">
+        <label for="total3" style="color:#d62121;">Total:</label>
+        <input type="number" id="total3" name="total3" readonly>
+    </div>
+
+    <!-- Grand Total -->
+    <label for="grandTotal" style="color:#4CAF50;">Grand Total:</label>
+    <input type="number" id="grandTotal" name="grandTotal" readonly>
+
+    <!-- Copy Button -->
+    <button class="copy-btn" onclick="copyToClipboard()">Copy Attendance</button>
+</div>
+
+<!-- Script to handle tab switching and calculate total attendance -->
+<script>
+    function openSection(sectionName, tabIndex) {
+        var tabcontent = document.getElementsByClassName("tabcontent");
+        for (var i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        var sections = document.getElementsByClassName("tabcontent");
+        var section = sections[tabIndex];
+        section.style.display = "inline-block";
+
+        // Calculate the scroll left position based on the width of the container or child
+        var containerWidth = document.querySelector('.container').offsetWidth;
+        var childWidth = section.offsetWidth;
+        var scrollLeft = tabIndex * childWidth;
+
+        // Scroll to the selected section
+        document.querySelector('.container').scrollTo({
+            left: scrollLeft,
+            behavior: 'smooth'
+        });
+
+        calculateGrandTotal();
+    }
+
+    // Function to calculate total attendance for each section
+    function calculateTotal(section) {
+        var male = parseInt(document.getElementById('male' + section).value) || 0;
+        var female = parseInt(document.getElementById('female' + section).value) || 0;
+        var total = male + female;
+
+        // Update the total input field
+        document.getElementById('total' + section).value = total;
+        calculateGrandTotal();
+    }
+
+    // Event listeners to recalculate total attendance on input change
+    document.getElementById('male1').addEventListener('input', function () { calculateTotal(1); });
+    document.getElementById('female1').addEventListener('input', function () { calculateTotal(1); });
+    document.getElementById('male2').addEventListener('input', function () { calculateTotal(2); });
+    document.getElementById('female2').addEventListener('input', function () { calculateTotal(2); });
+    document.getElementById('male3').addEventListener('input', function () { calculateTotal(3); });
+    document.getElementById('female3').addEventListener('input', function () { calculateTotal(3); });
+
+    // By default, open the first section
+    openSection('Adult', 0);
+
+    // Function to enable/disable date and day inputs based on service selection
+    
+    //get date and day
+    var dayInput = document.getElementById('day');
+    var dateInput = document.getElementById('date');
+     // Automatically set the current day and date
+            var today = new Date();
+            var day = today.toLocaleDateString('en-US', { weekday: 'long' });
+            var date = today.toISOString().split('T')[0];
+            
+            dayInput.value = day;
+            dateInput.value = date;
+
+ // Add event listener to update the day when the user changes the date
+ dateInput.addEventListener('input', function () {
+        var selectedDate = new Date(dateInput.value);
+        var selectedDay = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
+        dayInput.value = selectedDay;
+    });
+
+// Automatically set the service based on the day
+var day = dayInput.value;
+            var serviceOptions = document.getElementById('serviceSelect').options;
+            for (var i = 0; i < serviceOptions.length; i++) {
+                if (serviceOptions[i].text.includes(day)) {
+                    serviceSelect.value = serviceOptions[i].value;
+                    break;
+                }
+            };
+
+    function enableDateAndDay() {
+        var customService = document.querySelector('.customservice');
+        var customServices = document.getElementById('customservice')
+        
+        if (serviceSelect.value === 'gck') {
+           // dayInput.readOnly = false;
+            dateInput.readOnly = false;  
+            customService.style.display = "none";
+            customServices.style.display = "none" 
+        }else if(serviceSelect.value === 'custom service'){
+            dateInput.readOnly = false;  
+            // close the custom field input
+            customService.style.display = "block";
+            customServices.style.display = "block" 
+        }else {
+           // dayInput.readOnly = true;
+            dateInput.readOnly = true;
+            customService.style.display = "none";
+            customServices.style.display = "none" 
+        }
+    }
+
+    // Function to calculate grand total across all sections
+    function calculateGrandTotal() {
+        var grandTotal = 0;
+
+        for (var i = 1; i <= 3; i++) {
+            var total = parseInt(document.getElementById('total' + i).value) || 0;
+            grandTotal += total;
+        }
+
+        // Update the grand total input field
+        document.getElementById('grandTotal').value = grandTotal;
+    }
+
+    // Function to copy the attendance information to the clipboard
+    function copyToClipboard() {
+        // Build the formatted text
+        var churchName = document.getElementById('churchName').value.trim();
+        var service = document.getElementById('serviceSelect').value;
+        var selectedDay = document.getElementById('day').value.trim();
+        var date = document.getElementById('date').value.trim();
+        var adultMale = document.getElementById('male1').value.trim();
+        var adultFemale = document.getElementById('female1').value.trim();
+        var adultTotal = document.getElementById('total1').value.trim();
+        var youthMale = document.getElementById('male2').value.trim();
+        var youthFemale = document.getElementById('female2').value.trim();
+        var youthTotal = document.getElementById('total2').value.trim();
+        var childrenMale = document.getElementById('male3').value.trim();
+        var childrenFemale = document.getElementById('female3').value.trim();
+        var childrenTotal = document.getElementById('total3').value.trim();
+        var grandTotal = document.getElementById('grandTotal').value.trim();
+
+        var formattedText =
+            `*${churchName}*\n` +
+            `*Attendance for ${service}*\n` +
+            `*${selectedDay}*\n` +
+            `*${date}*\n\n` +
+            `*Adult*\n` +
+            `Male: ${adultMale}\n` +
+            `Female: ${adultFemale}\n` +
+            `*Total: ${adultTotal}*\n\n` +
+            `*Youth*\n` +
+            `Male: ${youthMale}\n` +
+            `Female: ${youthFemale}\n` +
+            `*Total: ${youthTotal}*\n\n` +
+            `*Children*\n` +
+            `Male: ${childrenMale}\n` +
+            `Female: ${childrenFemale}\n` +
+            `*Total: ${childrenTotal}*\n\n` +
+            `*Grand Total ${grandTotal}*`;
+
+        // Copy to clipboard
+        var tempInput = document.createElement("textarea");
+        tempInput.value = formattedText;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempInput);
+
+        // Notify the user
+        alert("Attendance information copied to clipboard!");
+    }
+
+    // Function to clear the red color from a field when the user starts filling it
+    function clearFieldError(element) {
+        element.style.border = "";
+    }
+</script>
+
+</body>
+</html>
