@@ -298,7 +298,13 @@ var day = dayInput.value;
     function copyToClipboard() {
         // Build the formatted text
         var churchName = document.getElementById('churchName').value.trim();
-        var service = document.getElementById('serviceSelect').value;
+        var service;
+            //variety option for service selected
+            if(serviceSelect.value === 'custom service'){
+                service = document.getElementById('customservice').value.trim();
+            }else{
+                service = document.getElementById('serviceSelect').value;
+            }
         var selectedDay = document.getElementById('day').value.trim();
         var date = document.getElementById('date').value.trim();
         var adultMale = document.getElementById('male1').value.trim();
